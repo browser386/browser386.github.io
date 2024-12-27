@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>下载触发方式测试页面</title>
+</head>
+<body>
+
+    <h1>文件下载触发方式示例</h1>
+
+    <!-- 使用 <a> 标签直接触发下载 -->
+    <h2>1. 使用 <code>&lt;a&gt;</code> 标签直接下载</h2>
+    <p>点击下面的链接下载文本文件：</p>
+    <a href="files/sample.txt" download="sample.txt">点击下载 sample.txt</a>
+
+    <hr>
+
+    <!-- 使用 Blob 和 JavaScript 触发下载 -->
+    <h2>2. 使用 Blob 和 JavaScript 生成并下载文件</h2>
+    <p>点击按钮生成并下载文本文件：</p>
+    <button onclick="downloadBlob()">生成并下载 Blob 文件</button>
+
+    <hr>
+
+    <!-- 使用 JavaScript 模拟点击触发下载 -->
+    <h2>3. 使用 JavaScript 模拟点击触发下载</h2>
+    <p>点击按钮触发下载链接：</p>
+    <button onclick="triggerDownload()">点击模拟下载链接</button>
+
+    <hr>
+
+    <!-- 使用 download 属性的下载链接 -->
+    <h2>4. 使用 <code>download</code> 属性指定下载文件</h2>
+    <p>点击下面的链接触发下载：</p>
+    <a href="files/sample.pdf" download="example.pdf">点击下载 example.pdf</a>
+
+    <hr>
+
+    <script>
+        // 使用 Blob 对象生成文件并触发下载
+        function downloadBlob() {
+            var text = "这是一个由 JavaScript 生成的文件内容。";
+            var blob = new Blob([text], { type: 'text/plain' });
+            var link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = "generated-file.txt";
+            link.click();
+        }
+
+        // 使用 JavaScript 模拟点击下载链接
+        function triggerDownload() {
+            var link = document.createElement('a');
+            link.href = 'files/sample.txt'; // 假设文件路径是有效的
+            link.download = 'sample.txt';
+            link.click();
+        }
+    </script>
+
+</body>
+</html>
