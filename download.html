@@ -12,7 +12,7 @@
     <!-- 使用 <a> 标签直接触发下载 -->
     <h2>1. 使用 <code>&lt;a&gt;</code> 标签直接下载</h2>
     <p>点击下面的链接下载文本文件：</p>
-    <a href="files/sample.txt" download="sample.txt">点击下载 sample.txt</a>
+    <a href="sample.txt" download="sample.txt">点击下载 sample.txt</a>
 
     <hr>
 
@@ -33,7 +33,7 @@
     <!-- 使用 download 属性的下载链接 -->
     <h2>4. 使用 <code>download</code> 属性指定下载文件</h2>
     <p>点击下面的链接触发下载：</p>
-    <a href="files/sample.pdf" download="example.pdf">点击下载 example.pdf</a>
+    <a href="sample.txt" download="example.pdf">点击下载 example.txt</a>
 
     <hr>
 
@@ -51,7 +51,7 @@
         // 使用 JavaScript 模拟点击下载链接
         function triggerDownload() {
             var link = document.createElement('a');
-            link.href = 'files/sample.txt'; // 假设文件路径是有效的
+            link.href = 'sample.txt'; // 假设文件路径是有效的
             link.download = 'sample.txt';
             link.click();
         }
