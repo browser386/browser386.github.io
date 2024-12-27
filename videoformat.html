@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H.265 Support Test</title>
+</head>
+<body>
+  <h1>H.265 Support Test</h1>
+
+  <script>
+    var video = document.createElement('video');
+    //var canPlayH265 = video.canPlayType('video/mp4; codecs="hev1.2.4.L153.B0"');
+    //var canPlayH265 = video.canPlayType('video/mp4; codecs="hev1.1.6.L120,mp4a.40.5"');
+    var canPlayH265 = video.canPlayType('video/mp4; codecs="hev1.1.6.L120.90"');
+    
+    if (canPlayH265 === 'probably' || canPlayH265 === 'maybe') {
+      document.write('<p>Your browser supports H.265 video.</p>');
+    } else {
+      document.write('<p>Your browser does not support H.265 video11.</p>');
+    }
+    
+    var canPlayMP4 = video.canPlayType('video/mp4; codecs="avc1.42E01E,mp4a.40.2"');
+    if (canPlayMP4 === 'probably' || canPlayMP4 === 'maybe') {
+      document.write('<p>Your browser supports Mp4 video.</p>');
+    } else {
+      document.write('<p>Your browser does not support Mp4 video11.</p>');
+    }    
+  </script>
+</body>
+</html>
