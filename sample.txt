@@ -1,0 +1,8 @@
+中文（Chinese）: 测试
+英文（English）: Test
+法文（French）: Test
+德文（German）: Test
+西班牙文（Spanish）: Prueba
+意大利文（Italian）: Test
+日文（Japanese）: テスト (Testo)
+韩文（Korean）: 테스트 (Teseuteu)
