@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打印页面</title>
+</head>
+<body>
+    <h1>打印功能示例</h1>
+
+    <!-- 按钮：打印整个页面 -->
+    <button onclick="printDocument()">打印整个文档</button>
+    
+    <!-- 按钮：打印iframe中的内容 -->
+    <button onclick="printIframe()">打印iframe</button>
+
+    <hr>
+
+    <!-- iframe：嵌入一个简单的HTML页面 -->
+    <iframe id="myIframe" src="about:blank" width="600" height="400"></iframe>
+
+    <script>
+        // 在页面加载时，给iframe添加一些内容
+        window.onload = function() {
+            var iframe = document.getElementById('myIframe');
+            var iframeDoc = iframe.contentWindow.document;
+
+            iframeDoc.open();
+            iframeDoc.write('<html><body><h2>这是iframe的内容</h2><p>你可以在这里添加更多的内容！</p></body></html>');
+            iframeDoc.close();
+        }
+
+        // 打印整个文档
+        function printDocument() {
+            window.print();
+        }
+
+        // 打印iframe中的内容
+        function printIframe() {
+            var iframe = document.getElementById('myIframe');
+            var iframeWindow = iframe.contentWindow;
+            iframeWindow.print();
+        }
+    </script>
+</body>
+</html>
