@@ -37,6 +37,20 @@
             text-decoration: underline;
         }
     </style>
+    <script>
+        function confirmNavigation(event) {
+            // 阻止默认行为
+            event.preventDefault();
+
+            // 显示确认框
+            var confirmed = confirm("您确定要跳转到此页面吗？");
+
+            // 如果用户点击 "确认"，则跳转
+            if (confirmed) {
+                window.location.href = event.target.href;
+            }
+        }
+    </script>    
 </head>
 <body>
     <h1>Choose a Page to View</h1>
@@ -50,8 +64,8 @@
         <li><a href="auth_spoof.html">auth_spoof</a></li>
         <li><a href="fullscr.html">fullscr</a></li>
         <li><a href="herf.html">herf</a></li>
-        <li><a href="onlinewebgl2.html" style="color: red;">webgl2</a></li>
-        <li><a href="http://nf.video/" style="color: red;">jank</a></li>        
+        <li><a href="onlinewebgl2.html" style="color: red;" onclick="confirmNavigation(event)">webgl2</a></li>
+        <li><a href="http://nf.video/" style="color: red;" onclick="confirmNavigation(event)">jank</a></li>        
         <li><a href="https://www.microphonetest.com/">microphonetest</a></li>
         <li><a href="https://www.onlinemictest.com/zh/webcam-test/">摄像头测试/</a></li>
         <li><a href="https://badssl.com/">badssl</a></li>
