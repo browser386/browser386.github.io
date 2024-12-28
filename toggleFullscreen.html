@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>toggleFullscreen</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    #iframe-container {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      margin-top: 20px;
+      border: 1px solid #ccc;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 20px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>toggleFullscreen</h1>
+
+  <!-- 输入框和按钮用于更新 iframe 的 src -->
+  <input type="text" id="iframe-src" placeholder="Enter URL for iframe" style="width: 80%; padding: 10px;">
+  <button onclick="updateIframeSrc()">Load Iframe</button>
+
+  <!-- Iframe 显示区域 -->
+  <div id="iframe-container">
+    <iframe id="myIframe" src="https://www.example.com"></iframe>
+  </div>
+
+  <!-- 全屏按钮 -->
+  <button onclick="toggleFullscreen()">Toggle Fullscreen</button>
+
+  <script>
+    // 更新 iframe src 的函数
+    function updateIframeSrc() {
+      const iframeSrc = document.getElementById('iframe-src').value;
+      const iframe = document.getElementById('myIframe');
+      
+      // 更新 iframe 的 src 属性
+      if (iframeSrc) {
+        iframe.src = iframeSrc;
+      } else {
+        alert("Please enter a valid URL!");
+      }
+    }
+
+    // 进入/退出全屏模式
+    function toggleFullscreen() {
+      const iframeContainer = document.getElementById('iframe-container');
+      
+      if (iframeContainer.requestFullscreen) {
+        iframeContainer.requestFullscreen();  // 标准全屏
+      } else if (iframeContainer.mozRequestFullScreen) { // Firefox
+        iframeContainer.mozRequestFullScreen();
+      } else if (iframeContainer.webkitRequestFullscreen) { // Chrome, Safari
+        iframeContainer.webkitRequestFullscreen();
+      } else if (iframeContainer.msRequestFullscreen) { // IE/Edge
+        iframeContainer.msRequestFullscreen();
+      }
+    }
+  </script>
+
+</body>
+</html>
