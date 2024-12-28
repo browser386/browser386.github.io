@@ -35,6 +35,12 @@
         <button onclick="updateViewport()">更新视口</button>
     </div>
 
+    <div class="input-container">
+        <label for="viewport-width">仅更新视口宽度:</label>
+        <input type="text" id="viewport-width" placeholder="例如：width=device-width" />
+        <button onclick="updateViewportWidth()">更新视口宽度</button>
+    </div>
+
     <iframe id="iframe" src="https://www.baidu.com"></iframe>
 
     <script>
@@ -57,6 +63,20 @@
             // 更新视口的 content 属性
             if (metaTag) {
                 metaTag.setAttribute("content", viewportContent);
+            } else {
+                alert("无法找到视口标签");
+            }
+        }
+
+        // 仅更新视口的宽度设置
+        function updateViewportWidth() {
+            const viewportWidth = document.getElementById("viewport-width").value;
+            const metaTag = document.querySelector('meta[name="viewport"]');
+            if (metaTag) {
+                const currentContent = metaTag.getAttribute("content");
+                // 如果宽度已经设置，则替换，如果没有，则添加
+                const newContent = currentContent.replace(/width=[^,]*/, viewportWidth);
+                metaTag.setAttribute("content", newContent);
             } else {
                 alert("无法找到视口标签");
             }
