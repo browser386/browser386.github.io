@@ -102,6 +102,23 @@
                 metaTag.setAttribute("content", "width=device-width, initial-scale=1.0");
             }
         });
+
+        // 确保 iframe 高度自适应视口
+        function adjustIframeHeight() {
+            const iframe = document.getElementById("iframe");
+            // 获取可用的视口高度
+            const windowHeight = window.innerHeight;
+            // 获取页面上方元素的高度，例如标题或其他内容的高度
+            const headerHeight = document.querySelector("h1").offsetHeight;
+            // 计算 iframe 的可用高度
+            const iframeHeight = windowHeight - headerHeight - 40;  // 40px 是一个额外的余量（可根据需要调整）
+
+            // 设置 iframe 的高度
+            iframe.style.height = iframeHeight + "px";
+        }
+
+        // 窗口大小变化时，重新调整 iframe 高度
+        window.addEventListener("resize", adjustIframeHeight);
     </script>
 </body>
 </html>
