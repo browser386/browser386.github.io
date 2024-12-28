@@ -68,14 +68,27 @@
             }
         }
 
-        // 仅更新视口的宽度设置
+        // 仅更新视口的宽度设置，保留其他设置不变
         function updateViewportWidth() {
             const viewportWidth = document.getElementById("viewport-width").value;
             const metaTag = document.querySelector('meta[name="viewport"]');
+            
             if (metaTag) {
                 const currentContent = metaTag.getAttribute("content");
-                // 如果宽度已经设置，则替换，如果没有，则添加
-                const newContent = currentContent.replace(/width=[^,]*/, viewportWidth);
+                let newContent;
+
+                // 使用正则表达式匹配和替换 width 部分
+                const widthRegex = /width=[^,]*/;
+                
+                // 如果找到了 width 属性，则替换
+                if (widthRegex.test(currentContent)) {
+                    newContent = currentContent.replace(widthRegex, viewportWidth);
+                } else {
+                    // 如果没有找到 width 属性，添加它
+                    newContent = `width=device-width, ${currentContent}`;
+                }
+
+                // 更新视口的 content 属性
                 metaTag.setAttribute("content", newContent);
             } else {
                 alert("无法找到视口标签");
