@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>动态更新 iframe 和 视口</title>
+    <title>动态更新视口</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,24 +21,24 @@
     </style>
 </head>
 <body>
-    <h1>动态更新 iframe 和 视口</h1>
+    <h1>动态更新视口</h1>
 
     <div class="input-container">
-        <label for="iframe-url">输入网址更新 iframe:</label>
+        <label for="iframe-url">输入网址更新iframe:</label>
         <input type="text" id="iframe-url" placeholder="输入网址（例如：https://www.baidu.com）" />
-        <button onclick="updateIframeUrl()">更新 iframe</button>
+        <button onclick="updateIframeUrl()">更新</button>
     </div>
 
     <div class="input-container">
         <label for="viewport">输入视口设置:</label>
         <input type="text" id="viewport" placeholder="例如：width=device-width, initial-scale=1.0" />
-        <button onclick="updateViewport()">更新视口</button>
+        <button onclick="updateViewport()">更新</button>
     </div>
 
     <div class="input-container">
         <label for="viewport-width">仅更新视口宽度:</label>
         <input type="text" id="viewport-width" placeholder="例如：width=device-width" />
-        <button onclick="updateViewportWidth()">更新视口宽度</button>
+        <button onclick="updateViewportWidth()">更新</button>
     </div>
 
     <iframe id="iframe" src="https://www.baidu.com"></iframe>
