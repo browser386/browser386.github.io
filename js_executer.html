@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic JS Executor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    pre {
+      background-color: #222;
+      color: #fff;
+      padding: 15px;
+      border-radius: 5px;
+      font-size: 16px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Dynamic JavaScript Executor</h1>
+  <p>Enter your JavaScript code below and click "Run" to execute it dynamically:</p>
+
+  <!-- Textarea for user input -->
+  <textarea id="jsCode" placeholder="Write your JavaScript code here..."></textarea>
+
+  <!-- Button to execute the JS code -->
+  <button onclick="executeJS()">Run Code</button>
+
+  <!-- Display output of executed JS -->
+  <pre id="output"></pre>
+
+  <script>
+    function executeJS() {
+      // Get the code from the textarea
+      const code = document.getElementById('jsCode').value;
+      
+      // Create a new <script> element and append it to the body
+      const script = document.createElement('script');
+      script.textContent = code;
+      
+      try {
+        // Attempt to execute the code
+        document.body.appendChild(script);
+        
+        // Display output in the <pre> element
+        document.getElementById('output').textContent = 'Code executed successfully!';
+      } catch (e) {
+        // Handle any errors that occur during execution
+        document.getElementById('output').textContent = 'Error: ' + e.message;
+      }
+    }
+  </script>
+
+</body>
+</html>
