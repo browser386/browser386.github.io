@@ -35,7 +35,7 @@
     button:hover {
       background-color: #45a049;
     }
-    pre {
+    #output {
       background-color: #222;
       color: #fff;
       padding: 15px;
@@ -59,26 +59,33 @@
   <button onclick="executeJS()">Run Code</button>
 
   <!-- Display output of executed JS -->
-  <pre id="output"></pre>
+  <div id="output"></div>
 
   <script>
+    // Redirect console.log to the #output div
+    const outputDiv = document.getElementById('output');
+    console.log = function(message) {
+      outputDiv.textContent += message + '\n';
+    };
+
     function executeJS() {
       // Get the code from the textarea
       const code = document.getElementById('jsCode').value;
       
-      // Create a new <script> element and append it to the body
-      const script = document.createElement('script');
-      script.textContent = code;
+      // Clear the previous output
+      outputDiv.textContent = '';
       
       try {
-        // Attempt to execute the code
-        document.body.appendChild(script);
+        // Attempt to execute the code using eval (not recommended in production for security reasons)
+        const result = eval(code);
         
-        // Display output in the <pre> element
-        document.getElementById('output').textContent = 'Code executed successfully!';
+        // Print result to output div
+        if (result !== undefined) {
+          outputDiv.textContent += 'Result: ' + result + '\n';
+        }
       } catch (e) {
-        // Handle any errors that occur during execution
-        document.getElementById('output').textContent = 'Error: ' + e.message;
+        // If there's an error, display it in the output div
+        outputDiv.textContent += 'Error: ' + e.message + '\n';
       }
     }
   </script>
