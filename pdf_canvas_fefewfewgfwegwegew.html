@@ -1,7 +1,7 @@
 <canvas id="pdf-canvas"></canvas>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 <script>
-  const url = 'https://fcj.nanjing.gov.cn/ztzl/wygl/wywxzjsygs/202109/P020210930565008204188.pdf';
+  const url = 'www.xinjin.gov.cn/xjxrmzf/c142838/2024-11/13/4ca918d1f9644ddba5942356fde5498f/files/bb3e28f0003e49329f85d2f36280a4a1.pdf';
   pdfjsLib.getDocument(url).promise.then(function(pdf) {
     pdf.getPage(1).then(function(page) {
       const canvas = document.getElementById('pdf-canvas');
