@@ -11,6 +11,10 @@
             margin: 0;
             padding: 20px;
         }
+        .container {
+            display: flex;
+            align-items: center; /* 垂直居中 */
+        }
         h1 {
             /* text-align: center; */
             margin-left: 20px;
@@ -106,8 +110,11 @@
     </script>    
 </head>
 <body>
-    <div class="ball"></div>
-    <h1>Choose a Page to View</h1>
+    <div class="container">
+        <div class="ball"></div>
+        <h1>Choose a Page to View</h1>
+    </div>
+
     <ul>
         <li class="lightgreen"><a href="https://www.boce.com/">拨测</a></li>
         <li class="lightgreen"><a href="https://itango.tencent.com/app/data/huatuo">华佗诊断</a></li>
