@@ -2,4 +2,8 @@
   window.top.location = "chrome://chrome-urls";
 
   </script>
-<p>"javascript:navFrame('data:text/html,<script>top.location="chrome://version";</script>')"</p>
+<script>
+    var jsCode = "javascript:navFrame('data:text/html,<script>top.location=\"chrome://version\";</script>')";
+    // 使用innerHTML或textContent打印代码
+    document.getElementById('output').textContent = jsCode;
+</script>
