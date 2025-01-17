@@ -1,0 +1,24 @@
+		<!DOCTYPE html>
+		<html>
+		<head>
+		<meta charset="utf-8">
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+		<meta http-equiv="expires" content="0">
+		<style>
+		</style>
+		<script>
+		 function  main(){
+			var bigInt64Arr = new BigInt64Array(8201);
+			var  int32 = new Int32Array(new ArrayBuffer(0x200));
+			try { var  str = int32.toLocaleString("bali",int32);}catch(err){}
+			var  str1 = int32.join(str);
+			var  str2 = bigInt64Arr.join(str1);
+			var arr = new Array('construct',str2);
+			var css = new CSSUnparsedValue(arr); 
+			var s = css.toLocaleString();
+		}
+		</script>
+		</head>
+		<body onload=main()>
+		</body></html>
