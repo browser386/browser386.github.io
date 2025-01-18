@@ -50,14 +50,7 @@
     // 更新 User-Agent
     function updateUserAgent() {
       const userAgent = document.getElementById('userAgent').value;
-      
-      // 模拟设置 User-Agent（注意：JavaScript 不能直接修改浏览器的 User-Agent）
-      // 这里模拟通过向 iframe 加载时修改 User-Agent 来改变请求头
-      const iframe = document.getElementById('iframe');
-      
-      // 使用代理服务器来动态设置 User-Agent（实际操作中可以通过代理服务器进行）
-      // 例如，可以将 iframe 的 src 地址替换为代理服务器的 URL，代理服务器根据 User-Agent 设置请求头。
-      alert("当前浏览器无法直接修改 User-Agent，通常需要通过代理服务器来实现。如果可以配置代理服务器，可以通过代理的方式修改请求头。");
+      navigator.userAgent = userAgent;
     }
   </script>
 </body>
