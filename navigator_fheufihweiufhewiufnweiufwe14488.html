@@ -3,35 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navigator Properties</title>
+    <title>Extended Browser Information</title>
 </head>
 <body>
-    <h1>Navigator Properties</h1>
+    <h1>Extended Browser Information</h1>
     <div id="navigator-info"></div>
 
     <script>
-        // 获取 navigator 对象的属性
         const navigatorInfo = {
+            // 传统信息
             appName: navigator.appName,
             appVersion: navigator.appVersion,
             platform: navigator.platform,
             userAgent: navigator.userAgent,
-            language: navigator.language,
+            language: navigator.language || navigator.userLanguage,
             onlineStatus: navigator.onLine,
-            hardwareConcurrency: navigator.hardwareConcurrency,
             cookieEnabled: navigator.cookieEnabled,
-            geolocation: typeof navigator.geolocation !== 'undefined' ? 'Available' : 'Not Available',
+            hardwareConcurrency: navigator.hardwareConcurrency,
             javaEnabled: navigator.javaEnabled(),
+            geolocation: typeof navigator.geolocation !== 'undefined' ? 'Available' : 'Not Available',
+            mediaDevices: typeof navigator.mediaDevices !== 'undefined' ? 'Available' : 'Not Available',
+            deviceMemory: navigator.deviceMemory || 'Not Available',
+            serviceWorker: typeof navigator.serviceWorker !== 'undefined' ? 'Supported' : 'Not Supported',
+            maxTouchPoints: navigator.maxTouchPoints || 'Not Available',
+            languageList: navigator.languages ? navigator.languages.join(', ') : 'Not Available',
+            plugins: (navigator.plugins && navigator.plugins.length > 0) ? Array.from(navigator.plugins).map(p => p.name).join(', ') : 'No plugins',
+            vendor: navigator.vendor,
+            vendorSub: navigator.vendorSub,
+            oscpu: navigator.oscpu || 'Not Available',
+            screenResolution: `${screen.width}x${screen.height}`,
+            colorDepth: screen.colorDepth,
+            pixelDepth: screen.pixelDepth,
+            screenOrientation: screen.orientation ? screen.orientation.type : 'Not Available',
+            innerWidth: window.innerWidth,
+            innerHeight: window.innerHeight,
+            outerWidth: window.outerWidth,
+            outerHeight: window.outerHeight,
+            screenAvailWidth: screen.availWidth,
+            screenAvailHeight: screen.availHeight,
+            screenDpi: screen.deviceXDPI || 'Not Available',
+            // 其他信息
+            devicePixelRatio: window.devicePixelRatio || 'Not Available',
+            localStorage: typeof window.localStorage !== 'undefined' ? 'Supported' : 'Not Supported',
+            vibrate: typeof navigator.vibrate === 'function' ? 'Supported' : 'Not Supported',
+            batteryStatus: 'Not Available',
+            bluetooth: typeof navigator.bluetooth !== 'undefined' ? 'Supported' : 'Not Supported',
+            mediaDevices: typeof navigator.mediaDevices !== 'undefined' ? 'Supported' : 'Not Supported',
+            performanceMemory: performance.memory ? JSON.stringify(performance.memory) : 'Not Available',
+            screenOrientation: screen.orientation ? screen.orientation.type : 'Not Available',
         };
 
-        // 格式化显示属性
+        // 格式化显示信息
         let infoHtml = '<ul>';
         for (let prop in navigatorInfo) {
             infoHtml += `<li><strong>${prop}:</strong> ${navigatorInfo[prop]}</li>`;
         }
         infoHtml += '</ul>';
 
-        // 将信息插入到页面上
+        // 将信息插入到页面
         document.getElementById('navigator-info').innerHTML = infoHtml;
     </script>
 </body>
