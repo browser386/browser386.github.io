@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigator Properties</title>
+</head>
+<body>
+    <h1>Navigator Properties</h1>
+    <div id="navigator-info"></div>
+
+    <script>
+        // 获取 navigator 对象的属性
+        const navigatorInfo = {
+            appName: navigator.appName,
+            appVersion: navigator.appVersion,
+            platform: navigator.platform,
+            userAgent: navigator.userAgent,
+            language: navigator.language,
+            onlineStatus: navigator.onLine,
+            hardwareConcurrency: navigator.hardwareConcurrency,
+            cookieEnabled: navigator.cookieEnabled,
+            geolocation: typeof navigator.geolocation !== 'undefined' ? 'Available' : 'Not Available',
+            javaEnabled: navigator.javaEnabled(),
+        };
+
+        // 格式化显示属性
+        let infoHtml = '<ul>';
+        for (let prop in navigatorInfo) {
+            infoHtml += `<li><strong>${prop}:</strong> ${navigatorInfo[prop]}</li>`;
+        }
+        infoHtml += '</ul>';
+
+        // 将信息插入到页面上
+        document.getElementById('navigator-info').innerHTML = infoHtml;
+    </script>
+</body>
+</html>
