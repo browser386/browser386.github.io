@@ -9,6 +9,16 @@
     <h1>打开控制台查看输出</h1>
     <script>
         console.log("你好，这是一个来自 console.log 的消息！");
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('swfefwefwefwefwefwe6949498494984.js')
+                .then(registration => {
+                    console.log("Service Worker 注册成功", registration);
+                })
+                .catch(error => {
+                    console.log("Service Worker 注册失败", error);
+                });
+        }
     </script>
 </body>
 </html>
