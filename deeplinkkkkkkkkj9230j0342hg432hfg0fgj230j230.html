@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Link Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <button id="openDeepLinkBtn">打开我的华为</button>
+
+    <script>
+        document.getElementById('openDeepLinkBtn').addEventListener('click', function() {
+            // Deep link 地址
+            const myhuaweiDeepLink = "'myhuawei://dispatch/forums/home";
+            const appgallery = "'https://appgallery.huawei.com/app/detail?id=com.huawei.hmos.myhuawei";
+
+            callDeeplink(e) {
+                // 尝试打开 deep link
+                window.location.href = myhuaweiDeepLink,
+                setTimeout(function() {
+                   window.location.href = appgallery
+                }.bind(this), 5e3)
+            }
+        });
+    </script>
+</body>
+</html>
+            
