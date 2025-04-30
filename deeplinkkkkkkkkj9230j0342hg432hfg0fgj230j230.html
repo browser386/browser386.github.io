@@ -28,16 +28,31 @@
     <button id="openDeepLinkBtn">打开我的华为</button>
 
     <script>
+        function getCurrentTime() {
+            const now = new Date();
+            return now.toLocaleTimeString();
+        }
+ 
         document.getElementById('openDeepLinkBtn').addEventListener('click', function() {
             // Deep link 地址
             const myhuaweiDeepLink = "myhuawei://dispatch/forums/home";
             const appgallery = "https://appgallery.huawei.com/app/detail?id=com.huawei.hmos.myhuawei";
 
+            const currentTime = getCurrentTime();
+            console.log(`click, 时间: ${currentTime}`);
+                           
             // 尝试打开 deep link
             window.location.href = myhuaweiDeepLink,
             setTimeout(function() {
+               const currentTime = getCurrentTime();
+               console.log(`timer fire, 时间: ${currentTime}`);
+               if(document.visibilityState == "hidden") {
+                  console.log(`页面不可见, 时间: ${currentTime}`);
+               } else {
+                  console.log(`页面不可见, 时间: ${currentTime}`);
+               }
                window.location.href = appgallery
-            }.bind(this), 15000)
+            }.bind(this), 5e3)
         });
     </script>
 </body>
