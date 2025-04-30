@@ -43,25 +43,7 @@
                            
             // 尝试打开 deep link
             window.location.href = myhuaweiDeepLink,
-            setTimeout(function() {
-               const currentTime = getCurrentTime();
-               console.log(`timer fire, 时间: ${currentTime}`);
-               if(document.visibilityState == "hidden") {
-                  console.log(`页面不可见, 时间: ${currentTime}`);
-               } else {
-                  console.log(`页面可见, 时间: ${currentTime}`);
-               }
-               
-               if(document.hidden == "true") {
-                  console.log(`页面hidden, 时间: ${currentTime}`);
-               } else {
-                  console.log(`页面not hidden, 时间: ${currentTime}`);
-               }
-               
-               console.log(`页面hidden， 属性 ${document.hidden}`);
-               
-               window.location.href = appgallery
-            }.bind(this), 5e3)
+
         });
     </script>
 </body>
