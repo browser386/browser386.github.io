@@ -41,8 +41,9 @@
             const currentTime = getCurrentTime();
             console.log(`click, 时间: ${currentTime}`);
                            
-            // 尝试打开 deep link
-            window.location.href = myhuaweiDeepLink
+             setTimeout(function() {             
+               window.location.href = appgallery
+            }.bind(this), 5e3)
 
         });
     </script>
