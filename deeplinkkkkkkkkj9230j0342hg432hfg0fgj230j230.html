@@ -52,8 +52,14 @@
                   console.log(`页面可见, 时间: ${currentTime}`);
                }
                
+               if(document.hidden == "true") {
+                  console.log(`页面hidden, 时间: ${currentTime}`);
+               } else {
+                  console.log(`页面not hidden, 时间: ${currentTime}`);
+               }
+               
                console.log(`页面hidden， 属性 ${document.hidden}`);
-
+               
                window.location.href = appgallery
             }.bind(this), 5e3)
         });
