@@ -33,13 +33,11 @@
             const myhuaweiDeepLink = "'myhuawei://dispatch/forums/home";
             const appgallery = "'https://appgallery.huawei.com/app/detail?id=com.huawei.hmos.myhuawei";
 
-            callDeeplink(e) {
-                // 尝试打开 deep link
-                window.location.href = myhuaweiDeepLink,
-                setTimeout(function() {
-                   window.location.href = appgallery
-                }.bind(this), 5e3)
-            }
+            // 尝试打开 deep link
+            window.location.href = myhuaweiDeepLink,
+            setTimeout(function() {
+               window.location.href = appgallery
+            }.bind(this), 5e3)
         });
     </script>
 </body>
