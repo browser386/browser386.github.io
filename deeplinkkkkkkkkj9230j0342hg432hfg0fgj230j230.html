@@ -37,6 +37,7 @@
             // Deep link 地址
             const myhuaweiDeepLink = "myhuawei://dispatch/forums/home";
             const appgallery = "https://appgallery.huawei.com/app/detail?id=com.huawei.hmos.myhuawei";
+            const appgalleryhealth = "https://appgallery.huawei.com/app/detail?id=com.huawei.hmos.health";            
 
             const currentTime = getCurrentTime();
             console.log(`click, 时间: ${currentTime}`);
@@ -45,7 +46,7 @@
             setTimeout(function() {
               const currentTime = getCurrentTime();  
               console.log(`timeout, 时间: ${currentTime}`);
-              window.location.href = myhuaweiDeepLin
+              window.location.href = appgalleryhealth
            }.bind(this), 5e3)
 
         });
