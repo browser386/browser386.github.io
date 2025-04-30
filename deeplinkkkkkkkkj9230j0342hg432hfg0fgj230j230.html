@@ -42,6 +42,7 @@
             console.log(`click, 时间: ${currentTime}`);
                            
              setTimeout(function() {
+               currentTime = getCurrentTime();  
                console.log(`timeout, 时间: ${currentTime}`);
                alert("timeout");
                window.location.href = myhuaweiDeepLink
