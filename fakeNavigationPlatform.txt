@@ -1,0 +1,45 @@
+===== background.js =====
+chrome.webNavigation.onCommitted.addListener((details) => {
+  // 只对主框架（非 iframe）注入
+  if (details.frameId === 0) {
+    chrome.scripting.executeScript({
+      target: { tabId: details.tabId },
+      files: ['override.js'],
+      injectImmediately: true
+    });
+  }
+});
+
+===== inject.js =====
+Object.defineProperty(navigator, 'platform', {
+  get: () => 'MyFakePlatform',
+  configurable: true
+});
+===== manifest.json =====
+{
+  "name": "Override Navigator Platform",
+  "version": "1.0",
+  "manifest_version": 3,
+  "description": "Use chrome.scripting to override navigator.platform",
+  "permissions": ["scripting", "tabs", "webNavigation"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["override.js", "inject.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "action": {
+    "default_title": "Inject Script"
+  }
+}
+
+===== override.js =====
+(function () {
+  const script = document.createElement('script');
+  script.src = chrome.runtime.getURL('inject.js');
+  document.documentElement.appendChild(script);
+})();
