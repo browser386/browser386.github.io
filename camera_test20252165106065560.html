@@ -9,8 +9,9 @@
     table { border-collapse: collapse; margin: 20px auto; background: white; }
     th, td { border: 1px solid #ccc; padding: 8px 12px; }
     th { background: #eee; }
+    tr.highlight { background: #d0f0d0; font-weight: bold; }
     video { width: 90%; max-width: 600px; margin-top: 20px; border: 2px solid #333; border-radius: 8px; }
-    .highlight { background: #d0f0d0; font-weight: bold; }
+    #info { margin: 10px; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -18,11 +19,13 @@
   <table id="results">
     <tr><th>设备名</th><th>方向</th><th>分辨率</th></tr>
   </table>
+  <div id="info">加载中...</div>
   <video id="video" autoplay playsinline></video>
 
   <script>
     const table = document.getElementById("results");
     const video = document.getElementById("video");
+    const infoBox = document.getElementById("info");
     let currentStream = null;
 
     // 测试单个摄像头
@@ -52,6 +55,7 @@
     // 在页面显示结果
     function addRow(info, highlight = false) {
       const row = document.createElement("tr");
+      row.dataset.deviceId = info.deviceId;
       if (highlight) row.classList.add("highlight");
       row.innerHTML = `
         <td>${info.label}</td>
@@ -67,45 +71,68 @@
       if (currentStream) {
         currentStream.getTracks().forEach(t => t.stop());
       }
-      currentStream = await navigator.mediaDevices.getUserMedia({
-        video: { deviceId: { exact: deviceId } }
-      });
-      video.srcObject = currentStream;
+      try {
+        currentStream = await navigator.mediaDevices.getUserMedia({
+          video: { deviceId: { exact: deviceId } }
+        });
+        video.srcObject = currentStream;
+
+        // 更新表格高亮
+        document.querySelectorAll("#results tr").forEach(tr => tr.classList.remove("highlight"));
+        const selectedRow = [...document.querySelectorAll("#results tr")].find(tr => 
+          tr.dataset.deviceId === deviceId
+        );
+        if (selectedRow) selectedRow.classList.add("highlight");
+
+        // 显示实际播放分辨率
+        video.onloadedmetadata = () => {
+          infoBox.textContent = `当前相机: ${selectedRow?.cells[0].textContent} | 实际分辨率: ${video.videoWidth} x ${video.videoHeight}`;
+        };
+      } catch (e) {
+        console.error("无法打开相机:", e);
+        infoBox.textContent = "无法打开该相机";
+      }
     }
 
     // 初始化
     async function init() {
-      // 先获取权限，让设备 label 可见
-      await navigator.mediaDevices.getUserMedia({ video: true });
+      try {
+        // 获取权限，让设备 label 可见
+        await navigator.mediaDevices.getUserMedia({ video: true });
 
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const cameras = devices.filter(d => d.kind === "videoinput");
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const cameras = devices.filter(d => d.kind === "videoinput");
 
-      let backCams = [];
-      for (const cam of cameras) {
-        const info = await testCamera(cam);
-        if (info && info.facingMode === "environment") {
-          backCams.push(info);
+        let backCams = [];
+        for (const cam of cameras) {
+          const info = await testCamera(cam);
+          if (info && info.facingMode === "environment") {
+            backCams.push(info);
+          }
         }
+
+        if (backCams.length === 0) {
+          const row = document.createElement("tr");
+          row.innerHTML = `<td colspan="3">未检测到后置相机</td>`;
+          table.appendChild(row);
+          infoBox.textContent = "未检测到后置相机";
+          return;
+        }
+
+        // 找出分辨率最高的后置相机
+        let best = backCams.reduce((a, b) => (a.width * a.height > b.width * b.height ? a : b));
+
+        // 添加表格行
+        for (const cam of backCams) {
+          addRow(cam, cam.deviceId === best.deviceId);
+        }
+
+        // 默认展示分辨率最高的相机
+        showCamera(best.deviceId);
+      } catch (err) {
+        console.error("初始化失败:", err);
+        infoBox.textContent = "初始化摄像头失败，请检查权限";
       }
-
-      if (backCams.length === 0) {
-        const row = document.createElement("tr");
-        row.innerHTML = `<td colspan="3">未检测到后置相机</td>`;
-        table.appendChild(row);
-        return;
-      }
-
-      // 找出分辨率最高的后置相机
-      let best = backCams.reduce((a, b) => (a.width * a.height > b.width * b.height ? a : b));
-
-      // 添加表格行
-      for (const cam of backCams) {
-        addRow(cam, cam.deviceId === best.deviceId);
-      }
-
-      // 默认展示分辨率最高的相机
-      showCamera(best.deviceId);
     }
 
     init();
