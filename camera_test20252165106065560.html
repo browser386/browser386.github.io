@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>后置摄像头对比</title>
+  <style>
+    body { font-family: sans-serif; background: #f5f5f5; text-align: center; }
+    h2 { margin-top: 20px; }
+    table { border-collapse: collapse; margin: 20px auto; background: white; }
+    th, td { border: 1px solid #ccc; padding: 8px 12px; }
+    th { background: #eee; }
+    video { width: 90%; max-width: 600px; margin-top: 20px; border: 2px solid #333; border-radius: 8px; }
+    .highlight { background: #d0f0d0; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>所有后置摄像头分辨率对比</h2>
+  <table id="results">
+    <tr><th>设备名</th><th>方向</th><th>分辨率</th></tr>
+  </table>
+  <video id="video" autoplay playsinline></video>
+
+  <script>
+    const table = document.getElementById("results");
+    const video = document.getElementById("video");
+    let currentStream = null;
+
+    // 测试单个摄像头
+    async function testCamera(device) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { deviceId: { exact: device.deviceId } }
+        });
+        const track = stream.getVideoTracks()[0];
+        const settings = track.getSettings();
+        const { width, height, facingMode } = settings;
+
+        stream.getTracks().forEach(t => t.stop());
+
+        return {
+          label: device.label || "未命名",
+          deviceId: device.deviceId,
+          facingMode: facingMode || "unknown",
+          width: width || 0,
+          height: height || 0
+        };
+      } catch {
+        return null;
+      }
+    }
+
+    // 在页面显示结果
+    function addRow(info, highlight = false) {
+      const row = document.createElement("tr");
+      if (highlight) row.classList.add("highlight");
+      row.innerHTML = `
+        <td>${info.label}</td>
+        <td>${info.facingMode}</td>
+        <td>${info.width} x ${info.height}</td>
+      `;
+      row.addEventListener("click", () => showCamera(info.deviceId));
+      table.appendChild(row);
+    }
+
+    // 打开某个摄像头预览
+    async function showCamera(deviceId) {
+      if (currentStream) {
+        currentStream.getTracks().forEach(t => t.stop());
+      }
+      currentStream = await navigator.mediaDevices.getUserMedia({
+        video: { deviceId: { exact: deviceId } }
+      });
+      video.srcObject = currentStream;
+    }
+
+    // 初始化
+    async function init() {
+      // 先获取权限，让设备 label 可见
+      await navigator.mediaDevices.getUserMedia({ video: true });
+
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const cameras = devices.filter(d => d.kind === "videoinput");
+
+      let backCams = [];
+      for (const cam of cameras) {
+        const info = await testCamera(cam);
+        if (info && info.facingMode === "environment") {
+          backCams.push(info);
+        }
+      }
+
+      if (backCams.length === 0) {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td colspan="3">未检测到后置相机</td>`;
+        table.appendChild(row);
+        return;
+      }
+
+      // 找出分辨率最高的后置相机
+      let best = backCams.reduce((a, b) => (a.width * a.height > b.width * b.height ? a : b));
+
+      // 添加表格行
+      for (const cam of backCams) {
+        addRow(cam, cam.deviceId === best.deviceId);
+      }
+
+      // 默认展示分辨率最高的相机
+      showCamera(best.deviceId);
+    }
+
+    init();
+  </script>
+</body>
+</html>
