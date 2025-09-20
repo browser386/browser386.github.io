@@ -9,7 +9,7 @@
     table { border-collapse: collapse; margin: 20px auto; background: white; }
     th, td { border: 1px solid #ccc; padding: 8px 12px; }
     th { background: #eee; }
-    video { width: 90%; max-width: 600px; margin-top: 20px; border: 2px solid #333; border-radius: 8px; }
+    video { width: 90%; max-width: 600px; margin-top: 20px; border: 2px solid #333; border-radius: 8px; background: black; }
     .highlight { background: #d0f0d0; font-weight: bold; }
     tr:hover { background: #f0f0f0; cursor: pointer; }
   </style>
@@ -19,12 +19,26 @@
   <table id="results">
     <tr><th>设备名</th><th>方向</th><th>分辨率</th></tr>
   </table>
-  <video id="video" autoplay playsinline></video>
+  <!-- 加上 muted，确保自动播放 -->
+  <video id="video" autoplay playsinline muted></video>
 
   <script>
     const table = document.getElementById("results");
     const video = document.getElementById("video");
     let currentStream = null;
+
+    async function playStream(stream) {
+      if (currentStream) {
+        currentStream.getTracks().forEach(t => t.stop());
+      }
+      currentStream = stream;
+      video.srcObject = stream;
+      try {
+        await video.play();
+      } catch (err) {
+        console.warn("自动播放失败，需要用户点击触发:", err);
+      }
+    }
 
     // 测试单个摄像头
     async function testCamera(device) {
@@ -51,9 +65,8 @@
     }
 
     // 在页面显示结果
-    function addRow(info, highlight = false) {
+    function addRow(info) {
       const row = document.createElement("tr");
-      if (highlight) row.classList.add("highlight");
       row.innerHTML = `
         <td>${info.label}</td>
         <td>${info.facingMode}</td>
@@ -65,8 +78,6 @@
 
     // 打开某个摄像头预览
     async function showCamera(deviceId) {
-      if (currentStream) {
-        currentStream.getTracks().forEach(t => t.stop());
-      }
-      currentStream = await navigator.mediaDevices.getUserMedia({
-        video: { deviceId: { exa
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { deviceId: { exact: deviceId } }
+      });
