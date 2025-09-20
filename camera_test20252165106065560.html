@@ -10,7 +10,6 @@
     th, td { border: 1px solid #ccc; padding: 8px 12px; }
     th { background: #eee; }
     video { width: 90%; max-width: 600px; margin-top: 20px; border: 2px solid #333; border-radius: 8px; background: black; }
-    .highlight { background: #d0f0d0; font-weight: bold; }
     tr:hover { background: #f0f0f0; cursor: pointer; }
   </style>
 </head>
@@ -81,3 +80,56 @@
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { deviceId: { exact: deviceId } }
       });
+      await playStream(stream);
+    }
+
+    // 打开默认后置摄像头
+    async function showDefaultBackCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" }
+        });
+        await playStream(stream);
+      } catch (e) {
+        console.error("打开默认后置相机失败:", e);
+        const fallback = await navigator.mediaDevices.getUserMedia({ video: true });
+        await playStream(fallback);
+      }
+    }
+
+    // 初始化
+    async function init() {
+      // 先打开默认后置摄像头
+      await showDefaultBackCamera();
+
+      // 获取权限，让 label 可见
+      await navigator.mediaDevices.getUserMedia({ video: true });
+
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const cameras = devices.filter(d => d.kind === "videoinput");
+
+      let backCams = [];
+      for (const cam of cameras) {
+        const info = await testCamera(cam);
+        if (info && info.facingMode === "environment") {
+          backCams.push(info);
+        }
+      }
+
+      if (backCams.length === 0) {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td colspan="3">未检测到后置相机</td>`;
+        table.appendChild(row);
+        return;
+      }
+
+      // 添加表格行
+      for (const cam of backCams) {
+        addRow(cam);
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
