@@ -1,83 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>input innerHeight 示例</title>
-<style>
-  body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-  }
+<html><head>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>熊猫无损音乐_熊猫无损音乐网_熊猫无损音乐下载_mp3免费下载-熊猫无损音乐官网</title>
+<meta name="keywords" content="熊猫无损音乐,熊猫无损音乐网,熊猫无损音乐官网,无损音乐免费下载,无损音乐下载,mp3免费下载"> 
+<meta name="description" content="熊猫无损音乐是一个专注无损音乐下载与mp3免费下载的平台，熊猫无损音乐网为音乐爱好者提供资源分享与交流空间">
+<link rel="stylesheet" rev="stylesheet" href="/assets/css/txcstx.css" type="text/css" media="all">
+<link rel="stylesheet" rev="stylesheet" href="/assets/css/public.css" type="text/css" media="all">
+<link rel="stylesheet" rev="stylesheet" href="/assets/css/font-awesome.min.css" type="text/css" media="all">
 
-  #container {
-    width: 100%;
-    height: 100%;
-    background-color: #f0f0f0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: height 0.3s;
-  }
 
-  input {
-    padding: 10px;
-    font-size: 18px;
-  }
 
-  label {
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-</style>
+
 </head>
-<body>
+<body onload="dmjm()">
+ 
+ 
 
-<div id="container">
-  <input type="text" placeholder="点击我">
+<div class="clearfix mb15" id="nav"> 
+<a href="javascript:;" id="pull"><i class="fa fa-bars"></i></a>
+  <ul class="clearfix zh" style="">
+    <li class="on"><a href="https://xmwav.net" rel="bookmark" title="熊猫无损音乐官网首页">首页</a></li>
+    <li class=""><a href="https://xmwav.net/xmlist/dy.html" rel="bookmark" title="抖音热门歌曲下载">抖音热门</a></li>
+    <li class=""><a href="https://xmwav.net/xmlist/rd.html" rel="bookmark" title="内地歌曲下载">内地</a></li>
+    <li class=""><a href="https://xmwav.net/xmlist/hk.html" rel="bookmark" title="港台歌曲下载">港台</a></li>
+    <li class=""><a href="https://xmwav.net/xmlist/rh.html" rel="bookmark" title="日韩歌曲下载">日韩</a></li>
+    <li class=""><a href="https://xmwav.net/xmlist/om.html" rel="bookmark" title="欧美歌曲下载">欧美</a></li>
+    <li class=""><a href="https://xmwav.net/xmlist/cyy.html" rel="bookmark" title="纯音乐歌曲下载">纯音乐</a></li>
+    <li class=""><a href="https://xmwav.net/xmlist/dj.html" rel="bookmark" title="车载DJ歌曲下载">车载DJ</a></li>
+    <li class=""><a href="https://xmwav.net/xmsglist/" rel="bookmark" title="歌手合集">歌手合集</a></li>
+    <li class=""><a href="https://xmwav.net/xmziplist/sfg.html" rel="bookmark" title="歌曲打包下载">打包下载</a></li>
+    <li class=""><a href="https://xmwav.net/xmuplist/wk.html" rel="bookmark" title="热门歌曲排行榜">排行榜</a></li>
+    <li class=""><a href="https://xmwav.net/xmtrklist/index.html" rel="bookmark" title="热门歌单">热门歌单🔥</a></li>
+  </ul>
+  <a class="search-on" href="javascript:;" target="_self"> 
+  <i class="fa fa-search fa-close (alias)"></i>
+  </a> 
+  <a class="login-on" href="javascript:;">
+      <i class="fa fa-user"></i> 
+  </a>
+  <div class="sj-ss" style="">
+    <form name="search" method="post" action="https://xmwav.net/index/search/">
+      <input type="hidden" name="action" value="1">
+      <input name="keyword" placeholder="请直接搜索歌曲名或歌手名" size="30" id="edtSearch" type="text">
+      <button class="search-submit" id="btnPost" type="submit"><i class="fa fa-search"></i></button>
+    </form>
+  </div>
 </div>
-
-<label>
-  <input type="checkbox" id="simulateNoChange"> 输入框点击时 innerHeight 不变化
-</label>
-
-<script>
-const container = document.getElementById('container');
-const checkbox = document.getElementById('simulateNoChange');
-
-let originalHeight = window.innerHeight;
-
-// 打印当前 innerHeight
-function logHeight() {
-  console.log('window.innerHeight:', window.innerHeight);
-}
-logHeight();
-
-window.addEventListener('resize', logHeight);
-
-// 模拟 innerHeight 不变化
-document.querySelector('input').addEventListener('focus', () => {
-  if (checkbox.checked) {
-    // 阻止 container 高度变化
-    container.style.height = originalHeight + 'px';
-  } else {
-    // 允许浏览器正常缩小
-    container.style.height = '100%';
-  }
-});
-
-// 当键盘收起时，恢复高度
-document.querySelector('input').addEventListener('blur', () => {
-  container.style.height = '100%';
-});
-</script>
-
-</body>
-</html>
+</body></html>
