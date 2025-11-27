@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>input innerHeight 示例</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  #container {
+    width: 100%;
+    height: 100%;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: height 0.3s;
+  }
+
+  input {
+    padding: 10px;
+    font-size: 18px;
+  }
+
+  label {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+</style>
+</head>
+<body>
+
+<div id="container">
+  <input type="text" placeholder="点击我">
+</div>
+
+<label>
+  <input type="checkbox" id="simulateNoChange"> 输入框点击时 innerHeight 不变化
+</label>
+
+<script>
+const container = document.getElementById('container');
+const checkbox = document.getElementById('simulateNoChange');
+
+let originalHeight = window.innerHeight;
+
+// 打印当前 innerHeight
+function logHeight() {
+  console.log('window.innerHeight:', window.innerHeight);
+}
+logHeight();
+
+window.addEventListener('resize', logHeight);
+
+// 模拟 innerHeight 不变化
+document.querySelector('input').addEventListener('focus', () => {
+  if (checkbox.checked) {
+    // 阻止 container 高度变化
+    container.style.height = originalHeight + 'px';
+  } else {
+    // 允许浏览器正常缩小
+    container.style.height = '100%';
+  }
+});
+
+// 当键盘收起时，恢复高度
+document.querySelector('input').addEventListener('blur', () => {
+  container.style.height = '100%';
+});
+</script>
+
+</body>
+</html>
