@@ -5,7 +5,7 @@
 <title>视频 + 定位示例</title>
 <style>
   body { font-family: sans-serif; padding: 20px; }
-  video { width: 100%; max-width: 600px; display: block; margin-bottom: 20px; }
+  video , audio { width: 100%; max-width: 600px; display: block; margin-bottom: 20px; }
   button { padding: 10px 20px; font-size: 16px; }
   #output { margin-top: 20px; white-space: pre-wrap; background: #f0f0f0; padding: 10px; border-radius: 5px; }
 </style>
@@ -18,7 +18,14 @@
   <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
   您的浏览器不支持 video 标签。
 </video>
-
+  
+<!-- 音频 -->
+<audio id="myAudio" controls>
+  <source src="https://www.w3schools.com/html/horse.ogg" type="audio/ogg">
+  <source src="https://www.w3schools.com/html/horse.mp3" type="audio/mpeg">
+  您的浏览器不支持 audio 标签。
+</audio>
+  
 <button id="locButton">点击获取当前位置并启动定时输出</button>
 
 <div id="output"></div>
