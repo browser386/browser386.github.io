@@ -64,9 +64,10 @@ document.getElementById('locButton').addEventListener('click', () => {
           document.getElementById('output').textContent += output;
         },
         err => {
-          const now = new Date().toLocaleString();          
-          console.error('按钮定位失败:', err);
-          document.getElementById('output').textContent += '[${now}] 按钮定位失败: ' + err.message + '\n';
+          const now = new Date().toLocaleString();
+          const output = `[${now}] getCurrentPosition按钮点击获取位置失败\n`;          
+          console.error(output);
+          document.getElementById('output').textContent += output;
         },
         { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
       );
