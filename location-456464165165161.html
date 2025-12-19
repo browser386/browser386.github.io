@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>视频 + 定位示例</title>
+<style>
+  body { font-family: sans-serif; padding: 20px; }
+  video { width: 100%; max-width: 600px; display: block; margin-bottom: 20px; }
+  button { padding: 10px 20px; font-size: 16px; }
+  #output { margin-top: 20px; white-space: pre-wrap; background: #f0f0f0; padding: 10px; border-radius: 5px; }
+</style>
+</head>
+<body>
+
+<h2>视频播放 + 定位示例</h2>
+
+<video id="myVideo" autoplay muted controls playsinline>
+  <source src="https://vdept3.bdstatic.com/mda-qftnhn30fh79wtni/cae_h264/1719597661235582666/mda-qftnhn30fh79wtni.mp4?v_from_s=hkapp-haokan-hna&auth_key=1766149402-0-0-219d37ae7fcd96c5d955a24d641f39ae&bcevod_channel=searchbox_feed&pd=1&cr=0&cd=0&pt=3&logid=0202707688&vid=325635436633582970&klogid=0202707688&abtest=" type="video/mp4">
+  您的浏览器不支持 video 标签。
+</video>
+
+<button id="locButton">点击获取当前位置并启动定时输出</button>
+
+<div id="output"></div>
+
+<script>
+let lastPos = null;
+let timerId = null; // 用于保存定时器 ID
+
+// 持续监听位置变化
+if (navigator.geolocation) {
+  navigator.geolocation.watchPosition(
+    pos => {
+      lastPos = pos;
+      const now = new Date().toLocaleString();
+      const output = `[${now}] watchPosition按钮点击获取位置: lat=${pos.coords.latitude}, lon=${pos.coords.longitude}\n`;
+      console.log(output);
+      document.getElementById('output').textContent += output;      
+    },
+    err => {
+      console.error('watchPosition定位失败:', err);
+      document.getElementById('output').textContent += 'watchPosition定位失败: ' + err.message + '\n';
+    },
+    { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
+  );
+}
+
+// 按钮点击获取一次位置，并启动定时器
+document.getElementById('locButton').addEventListener('click', () => {
+  // 清除之前的定时器（如果有）
+  if (timerId) {
+    clearInterval(timerId);
+    timerId = null;
+  }
+
+  // 获取当前位置一次
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const now = new Date().toLocaleString();
+        const output = `[${now}] 按钮点击获取位置: lat=${pos.coords.latitude}, lon=${pos.coords.longitude}\n`;
+        console.log(output);
+        document.getElementById('output').textContent += output;
+      },
+      err => {
+        console.error('按钮定位失败:', err);
+        document.getElementById('output').textContent += '按钮定位失败: ' + err.message + '\n';
+      },
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
+    );
+  }
+
+  // 启动新的定时器，每10秒输出最新位置
+  timerId = setInterval(() => {
+    if (lastPos) {
+      const now = new Date().toLocaleString();
+      const output = `[${now}] 最新位置: lat=${lastPos.coords.latitude}, lon=${lastPos.coords.longitude}\n`;
+      console.log(output);
+      document.getElementById('output').textContent += output;
+    }
+  }, 10000);
+});
+</script>
+
+</body>
+</html>
