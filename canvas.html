@@ -1,27 +1,28 @@
-function getCanvasFingerprint() {
-  // 创建一个不可见的 canvas 元素
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
+<canvas id="fingerprintCanvas" width="300" height="150"></canvas>
+<script>
+  function getCanvasFingerprint() {
+    const canvas = document.getElementById('fingerprintCanvas');
+    const ctx = canvas.getContext('2d');
 
-  // 设置字体
-  ctx.font = '20px Arial';  // 使用常见字体，如 Arial
-  ctx.textBaseline = 'top';
-  ctx.fillText('Fingerprint test', 10, 10);
+    // 设置字体
+    ctx.font = '20px Arial';  // 使用常见字体，如 Arial
+    ctx.textBaseline = 'top';
+    ctx.fillText('Fingerprint test', 10, 10);
 
-  // 获取绘制后的像素数据
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const data = imageData.data;
+    // 获取绘制后的像素数据
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
 
-  // 根据像素数据生成唯一的指纹（这里是简单的像素和，但可以更复杂）
-  let fingerprint = 0;
-  for (let i = 0; i < data.length; i++) {
-    fingerprint += data[i];  // 累加像素值
+    // 根据像素数据生成唯一的指纹（你可以对这些数据进行哈希处理）
+    let fingerprint = 0;
+    for (let i = 0; i < data.length; i++) {
+      fingerprint += data[i];  // 累加像素值（这只是示例，实际方法可以更复杂）
+    }
+
+    return fingerprint;  // 返回指纹值
   }
 
-  return fingerprint;  // 返回指纹值
-}
-
-// 调用函数并打印结果
-const fingerprint = getCanvasFingerprint();
-console.log("Canvas Fingerprint: ", fingerprint);
-alert("Canvas Fingerprint: ", fingerprint);
+  const fingerprint = getCanvasFingerprint();
+  console.log("Canvas Fingerprint: ", fingerprint);
+  alert("Canvas Fingerprint: ", fingerprint);
+</script>
