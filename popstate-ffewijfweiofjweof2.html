@@ -1,0 +1,43 @@
+<html>
+
+<body onload="pushstate();">
+		测试 onpopstate , 不执行任何事情时，对历史记录的影响
+		
+		<br><br>
+		跨页面的正常后退，是不会触发 onpopstate 的；只有当同一个文档的历史节点变化时，才触发 onpopstate。
+		
+		<br>
+		点击一下 test ，页面将永远后退不出来<br>
+		
+		<a href="#page=1"> popstate1 </a>
+
+
+
+		<script>
+			 var i = 0;
+ 			  function pushstate(){
+				i++;
+				var page = "?page=" + i;
+				window.history.pushState(null,"pushState Test",page);
+				
+			  }
+			  
+			  
+				
+         </script>
+         <button id="abc" onclick="pushstate();">test</button>
+         
+     </body>
+
+
+</html>
+<script>
+		window.onpopstate = function(event) {
+            //这里可以监听到浏览器的返回事件，并做你想做的事情，
+            //例如：跳转到另一个网页
+             //location.href = "https://www.baidu.com";
+			 pushstate();
+			 //location.href = "https://www.baidu.com";
+			};
+		
+         </script>
