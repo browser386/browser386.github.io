@@ -44,7 +44,7 @@ body {
 		点击一下 test ，页面将永远后退不出来<br>
 		
 		<a href="#page=1"> popstate1 </a>
-
+        <div id="result">等待点击...</div>
 
 
 		<script>
@@ -53,8 +53,12 @@ body {
 				i++;
 				var page = "?page=" + i;
 				window.history.pushState(null,"pushState Test",page);
+            
+				const resultDiv = document.getElementById('result');	
+				const currentUrl = window.location.href;
+                resultDiv.innerText = "当前 URL: " + currentUrl;
+				
 				if ("vibrate" in navigator) {
-                    // 震动 200 毫秒
                     navigator.vibrate(200);
                 } else {
                     alert("您的浏览器不支持物理震动功能");
