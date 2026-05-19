@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 标准移动端视口配置 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WebView 软键盘避让测试机制</title>
+    <style>
+        /* 基础样式复位 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f5f5f7;
+        }
+
+        /* 顶部固定悬浮的数据监控面板 */
+        .monitor-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            color: #00ff00;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 13px;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .monitor-line {
+            margin-bottom: 4px;
+        }
+
+        /* 主体内容容器 */
+        .content-container {
+            padding-top: 140px; /* 留出监控面板的空间 */
+            padding-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card {
+            width: 90%;
+            max-width: 500px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        h3 {
+            margin-bottom: 12px;
+            color: #333;
+        }
+
+        p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        /* 模式切换按钮 */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007aff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .btn-danger {
+            background: #ff3b30;
+        }
+
+        /* 撑开页面高度的占位块，制造天然的滚动条 */
+        .spacer {
+            height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            font-style: italic;
+            border-left: 2px dashed #ddd;
+            margin: 20px 0;
+        }
+
+        /* 输入框样式 */
+        .input-group {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px; /* 防止 iOS 自动放大 */
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #007aff;
+            background-color: #f0f7ff;
+        }
+
+        /* 【核心演示】错误模式下的锁定样式 */
+        .lock-screen {
+            height: 100vh !important;
+            overflow: hidden !important;
+            position: fixed !important;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 监控面板：实时打印视口数据 -->
+    <div class="monitor-panel">
+        <div class="monitor-line">📊 视口核心数据监控：</div>
+        <div class="monitor-line">window.innerHeight: <span id="val-inner-h">0</span>px</div>
+        <div class="monitor-line">visualViewport.height: <span id="val-visual-h">0</span>px</div>
+        <div class="monitor-line">visualViewport.pageTop (上滑位移): <span id="val-page-top">0</span>px</div>
+        <div class="monitor-line" style="color: #ff9500;">当前状态: <span id="val-status">正常模式（允许滚动避让）</span></div>
+    </div>
+
+    <!-- 主体内容 -->
+    <div class="content-container" id="mainContainer">
+        
+        <!-- 卡片 1：模式控制器 -->
+        <div class="card">
+            <h3>1. 触发模式切换演示</h3>
+            <p>如果你的应用点击输入框没有上移，可能是被错误的 CSS 锁死了滚动。点击下方按钮可以切换网页形态进行对比测试：</p>
+            <button class="btn" id="toggleBtn">切换到：错误锁死模式</button>
+        </div>
+
+        <!-- 占位块：负责把输入框推到屏幕下方 -->
+        <div class="spacer">↓↓ 向下滚动查看输入框 ↓↓</div>
+        <div class="spacer">为了模拟真实的长表单环境，此处故意撑高页面</div>
+
+        <!-- 卡片 2：测试输入框 -->
+        <div class="card" id="inputCard">
+            <h3>2. 目标测试输入框</h3>
+            <p>当此输入框位于屏幕下半部分时，点击它唤起软键盘。观察上方监控面板的数值变化，并看页面是否会自动上滑。</p>
+            
+            <div class="input-group">
+                <label for="test-input">点击下方框测试内核自动 scrollIntoView：</label>
+                <input type="text" id="test-input" placeholder="点击这里，观察是否上滑...">
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const innerHDisplay = document.getElementById('val-inner-h');
+        const visualHDisplay = document.getElementById('val-visual-h');
+        const pageTopDisplay = document.getElementById('val-page-top');
+        const statusDisplay = document.getElementById('val-status');
+        const toggleBtn = document.getElementById('toggleBtn');
+        
+        let isLockedMode = false;
+
+        // 1. 实时刷新并填充视口数据的函数
+        function updateViewportMetrics() {
+            innerHDisplay.innerText = window.innerHeight;
+            
+            if (window.visualViewport) {
+                visualHDisplay.innerText = Math.round(window.visualViewport.height);
+                pageTopDisplay.innerText = Math.round(window.visualViewport.pageTop);
+            } else {
+                visualHDisplay.innerText = '不支持此API';
+                pageTopDisplay.innerText = '不支持此API';
+            }
+        }
+
+        // 2. 绑定监听事件（同时监听普通 resize 和系统的 visualViewport 行为）
+        window.addEventListener('resize', updateViewportMetrics);
+        window.addEventListener('scroll', updateViewportMetrics);
+        
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', updateViewportMetrics);
+            window.visualViewport.addEventListener('scroll', updateViewportMetrics);
+        }
+
+        // 初始化执行一次
+        updateViewportMetrics();
+
+        // 3. 错误模式切换逻辑（模拟前端典型的 overflow:hidden 导致的避让失效问题）
+        toggleBtn.addEventListener('click', () => {
+            isLockedMode = !isLockedMode;
+            const target = document.documentElement; // 针对 html 节点进行样式锁定
+            
+            if (isLockedMode) {
+                target.classList.add('lock-screen');
+                statusDisplay.innerText = "错误锁死模式（设置了overflow:hidden，内核将无法自动上滑！）";
+                statusDisplay.style.color = "#ff3b30";
+                toggleBtn.innerText = "切换回：正常模式";
+                toggleBtn.classList.add('btn-danger');
+            } else {
+                target.classList.remove('lock-screen');
+                statusDisplay.innerText = "正常模式（允许滚动避让）";
+                statusDisplay.style.color = "#00ff00";
+                toggleBtn.innerText = "切换到：错误锁死模式";
+                toggleBtn.classList.remove('btn-danger');
+            }
+            // 切换模式后重置一下数据
+            updateViewportMetrics();
+        });
+    </script>
+</body>
+</html>
