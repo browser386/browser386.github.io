@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebView 鼠标点击事件测试</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: monospace; background: #121212; color: #fff; margin: 20px; display: flex; gap: 20px; }
+        .panel { flex: 1; display: flex; flex-direction: column; gap: 15px; }
+        .target-box {
+            height: 180px; background: #1e1e2e; border: 2px dashed #45475a; border-radius: 8px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; user-select: none; transition: background 0.1s;
+        }
+        .target-box:hover { background: #313244; }
+        .target-box:active { background: #45475a; }
+        .count-display { font-size: 3rem; font-weight: bold; color: #89b4fa; }
+        .status-badge { font-size: 0.9rem; padding: 4px 8px; border-radius: 4px; background: #313244; color: #a6adc8; }
+        
+        .log-container { flex: 1.2; background: #181825; border-radius: 8px; border: 1px solid #313244; padding: 10px; display: flex; flex-direction: column; height: 90vh; }
+        .log-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid #313244; }
+        .log-list { flex: 1; overflow-y: auto; margin-top: 10px; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+        .log-item { padding: 4px 8px; border-radius: 4px; background: #11111b; border-left: 3px solid #585b70; }
+        .log-mousedown { border-color: #f9e2af; color: #f9e2af; }
+        .log-mouseup { border-color: #89b4fa; color: #89b4fa; }
+        .log-click { border-color: #a6e3a1; color: #a6e3a1; font-weight: bold; background: #1e2e1e; }
+        .log-tapcancel { border-color: #f38ba8; color: #f38ba8; font-weight: bold; background: #311b21; }
+        .log-scroll { border-color: #fab387; color: #fab387; }
+        button { background: #313244; color: #cdd6f4; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #45475a; }
+    </style>
+</head>
+<body>
+
+<div class="panel">
+    <h2>1. 快速测试靶场</h2>
+    <div id="target" class="target-box">
+        <div id="count" class="count-display">0</div>
+        <div>点击测试区域（连续快速点击试试）</div>
+        <div id="status" class="status-badge" style="margin-top: 10px;">等待点击...</div>
+    </div>
+
+    <h3>诊断说明</h3>
+    <ul style="color: #bac2de; font-size: 13px; line-height: 1.6;">
+        <li><b>正常情况：</b> 每次点击按顺序打印 <span style="color: #f9e2af">mousedown</span> &rarr; <span style="color: #89b4fa">mouseup</span> &rarr; <span style="color: #a6e3a1">click</span>，计数器 +1。</li>
+        <li><b>若出现 <span style="color: #f38ba8">GestureTapCancel</span>：</b> 说明 M132 内核误判为了滚动/拖拽手势，把 click 吞掉了！</li>
+        <li><b>若只显示 mousedown/mouseup 无 click：</b> 存在事件中途拦截或拖拽状态未释放。</li>
+    </ul>
+</div>
+
+<div class="log-container">
+    <div class="log-header">
+        <span>实时事件抓取日志</span>
+        <button onclick="clearLog()">清空日志</button>
+    </div>
+    <div id="logList" class="log-list"></div>
+</div>
+
+<script>
+    let clickCount = 0;
+    const target = document.getElementById('target');
+    const countDisplay = document.getElementById('count');
+    const statusDisplay = document.getElementById('status');
+    const logList = document.getElementById('logList');
+
+    function log(type, detail = '', className = '') {
+        const item = document.createElement('div');
+        const now = new Date();
+        const timeStr = `${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}.${now.getMilliseconds().toString().padStart(3, '0')}`;
+        
+        item.className = `log-item ${className}`;
+        item.innerText = `[${timeStr}] ${type.toUpperCase()} ${detail}`;
+        
+        logList.appendChild(item);
+        logList.scrollTop = logList.scrollHeight;
+    }
+
+    function clearLog() {
+        logList.innerHTML = '';
+    }
+
+    // 监听核心点击链路事件
+    const eventsToTrack = ['mousedown', 'mouseup', 'click', 'pointerdown', 'pointerup', 'pointercancel', 'dragstart', 'wheel'];
+
+    eventsToTrack.forEach(eventType => {
+        window.addEventListener(eventType, (e) => {
+            if (e.target.closest('.log-container')) return; // 忽略日志区域本身的滚动
+
+            let extra = `(x:${Math.round(e.clientX)}, y:${Math.round(e.clientY)})`;
+            let styleClass = '';
+
+            if (eventType === 'mousedown') styleClass = 'log-mousedown';
+            if (eventType === 'mouseup') styleClass = 'log-mouseup';
+            if (eventType === 'click') {
+                styleClass = 'log-click';
+                clickCount++;
+                countDisplay.innerText = clickCount;
+                statusDisplay.innerText = `成功触发 Click! (${clickCount})`;
+                statusDisplay.style.background = '#2e3d2e';
+            }
+            if (eventType === 'pointercancel') {
+                styleClass = 'log-tapcancel';
+                statusDisplay.innerText = `警告: Pointer/Tap 被取消!`;
+                statusDisplay.style.background = '#4a252c';
+            }
+            if (eventType === 'wheel') styleClass = 'log-scroll';
+
+            log(eventType, extra, styleClass);
+        }, true); // 使用 Capture 阶段抓取，防止被 stopPropagation 拦截
+    });
+</script>
+
+</body>
+</html>
