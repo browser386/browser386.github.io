@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的 iframe 网页</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            margin: 40px auto;
+            max-width: 900px;
+            background-color: #f7f9fc;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        p {
+            text-align: center;
+            font-size: 16px;
+        }
+        /* 给 iframe 外部加一个漂亮的容器 */
+        .iframe-container {
+            border: 2px solid #e1e4e8;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background-color: #fff;
+            margin-top: 20px;
+        }
+        /* 设置 iframe 的宽高和去除默认边框 */
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            display: block; /* 移除底部多余的空白间距 */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>欢迎来到我的本地网页</h1>
+    <p>下方是一个嵌入了外部网站的 iframe 窗口：</p>
+
+    <div class="iframe-container">
+        <!-- src 属性填入你想要嵌入的网址或本地文件路径 -->
+        <iframe src="https://cn.bing.com" title="必应搜索" allowfullscreen></iframe>
+    </div>
+
+</body>
+</html>
