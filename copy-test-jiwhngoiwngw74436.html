@@ -2,35 +2,48 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>剪贴板 API 测试</title>
+    <title>剪贴板 API 测试与读取</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; }
-        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
-        .log { background: #f0f0f0; padding: 10px; margin-top: 10px; white-space: pre-wrap; }
+        body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+        button { padding: 10px 15px; margin: 5px 5px 5px 0; cursor: pointer; }
+        .section { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background: #fafafa; }
+        .log { background: #f0f0f0; padding: 10px; margin-top: 10px; white-space: pre-wrap; border-radius: 3px; font-family: monospace; font-size: 13px; max-height: 200px; overflow-y: auto; }
+        .highlight { color: #d9534f; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <h2>H5 剪贴板复制接口测试</h2>
+    <h2>H5 剪贴板复制与读取测试</h2>
 
-    <div>
-        <input type="text" id="inputText" value="Hello, 复制测试文本！" style="width: 300px; padding: 5px;">
-    </div>
-    <br>
-    <div>
-        <!-- 1. 测试现代异步接口 -->
-        <button id="btnClipboard">测试 navigator.clipboard.writeText()</button>
-        
-        <!-- 2. 测试传统兼容接口 -->
-        <button id="btnExecCommand">测试 document.execCommand('copy')</button>
+    <div class="section">
+        <h3>1. 准备复制的内容</h3>
+        <input type="text" id="inputText" value="Hello, 剪贴板测试文本 2026！" style="width: 100%; padding: 8px; box-sizing: border-box;">
     </div>
 
-    <div class="log" id="logArea">日志输出：\n</div>
+    <div class="section">
+        <h3>2. 执行写入（复制）</h3>
+        <button id="btnClipboard">navigator.clipboard.writeText()</button>
+        <button id="btnExecCommand">document.execCommand('copy')</button>
+    </div>
+
+    <div class="section">
+        <h3>3. 执行读取（打印到页面）</h3>
+        <button id="btnRead">读取剪贴板内容并打印</button>
+        <p>当前读取到的内容：<span id="readResult" class="highlight">（暂无）</span></p>
+    </div>
+
+    <div class="section">
+        <h3>操作日志</h3>
+        <div class="log" id="logArea">日志输出：\n</div>
+    </div>
 
     <script>
         const logArea = document.getElementById('logArea');
+        const readResult = document.getElementById('readResult');
+
         function log(msg) {
             logArea.textContent += msg + '\n';
+            logArea.scrollTop = logArea.scrollHeight; // 滚动到底部
             console.log(msg);
         }
 
@@ -40,12 +53,12 @@
             try {
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     await navigator.clipboard.writeText(text);
-                    log('✅ navigator.clipboard.writeText 成功！');
+                    log('✅ [Write] navigator.clipboard.writeText 成功！');
                 } else {
-                    log('❌ 当前环境不支持 navigator.clipboard');
+                    log('❌ [Write] 当前环境不支持 navigator.clipboard');
                 }
             } catch (err) {
-                log('❌ navigator.clipboard 失败: ' + err);
+                log('❌ [Write] navigator.clipboard 失败: ' + err);
             }
         });
 
@@ -53,7 +66,6 @@
         document.getElementById('btnExecCommand').addEventListener('click', () => {
             const text = document.getElementById('inputText').value;
             try {
-                // 创建一个临时输入框
                 const input = document.createElement('textarea');
                 input.value = text;
                 document.body.appendChild(input);
@@ -63,12 +75,29 @@
                 document.body.removeChild(input);
                 
                 if (successful) {
-                    log('✅ document.execCommand("copy") 成功！');
+                    log('✅ [Write] document.execCommand("copy") 成功！');
                 } else {
-                    log('❌ document.execCommand("copy") 返回 false');
+                    log('❌ [Write] document.execCommand("copy") 返回 false');
                 }
             } catch (err) {
-                log('❌ document.execCommand 异常: ' + err);
+                log('❌ [Write] document.execCommand 异常: ' + err);
+            }
+        });
+
+        // 3. 测试 navigator.clipboard.readText()（读取并打印）
+        document.getElementById('btnRead').addEventListener('click', async () => {
+            try {
+                if (navigator.clipboard && navigator.clipboard.readText) {
+                    // 注意：读取剪贴板通常会弹出一个浏览器权限询问框（或者在安全上下文中直接读取）
+                    const text = await navigator.clipboard.readText();
+                    readResult.textContent = text;
+                    log('📖 [Read] 成功读取剪贴板内容: "' + text + '"');
+                } else {
+                    log('❌ [Read] 当前环境不支持 navigator.clipboard.readText');
+                }
+            } catch (err) {
+                readResult.textContent = '读取失败（可能无权限或未授权）';
+                log('❌ [Read] 读取剪贴板失败: ' + err);
             }
         });
     </script>
