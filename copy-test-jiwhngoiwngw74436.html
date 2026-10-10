@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>剪贴板 API 测试</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        .log { background: #f0f0f0; padding: 10px; margin-top: 10px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+
+    <h2>H5 剪贴板复制接口测试</h2>
+
+    <div>
+        <input type="text" id="inputText" value="Hello, 复制测试文本！" style="width: 300px; padding: 5px;">
+    </div>
+    <br>
+    <div>
+        <!-- 1. 测试现代异步接口 -->
+        <button id="btnClipboard">测试 navigator.clipboard.writeText()</button>
+        
+        <!-- 2. 测试传统兼容接口 -->
+        <button id="btnExecCommand">测试 document.execCommand('copy')</button>
+    </div>
+
+    <div class="log" id="logArea">日志输出：\n</div>
+
+    <script>
+        const logArea = document.getElementById('logArea');
+        function log(msg) {
+            logArea.textContent += msg + '\n';
+            console.log(msg);
+        }
+
+        // 1. 测试 navigator.clipboard.writeText()
+        document.getElementById('btnClipboard').addEventListener('click', async () => {
+            const text = document.getElementById('inputText').value;
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(text);
+                    log('✅ navigator.clipboard.writeText 成功！');
+                } else {
+                    log('❌ 当前环境不支持 navigator.clipboard');
+                }
+            } catch (err) {
+                log('❌ navigator.clipboard 失败: ' + err);
+            }
+        });
+
+        // 2. 测试 document.execCommand('copy')
+        document.getElementById('btnExecCommand').addEventListener('click', () => {
+            const text = document.getElementById('inputText').value;
+            try {
+                // 创建一个临时输入框
+                const input = document.createElement('textarea');
+                input.value = text;
+                document.body.appendChild(input);
+                input.select();
+                
+                const successful = document.execCommand('copy');
+                document.body.removeChild(input);
+                
+                if (successful) {
+                    log('✅ document.execCommand("copy") 成功！');
+                } else {
+                    log('❌ document.execCommand("copy") 返回 false');
+                }
+            } catch (err) {
+                log('❌ document.execCommand 异常: ' + err);
+            }
+        });
+    </script>
+</body>
+</html>
